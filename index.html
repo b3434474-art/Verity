@@ -24,7 +24,7 @@ button{border:1px solid #6d588e;background:#302440;color:var(--text);padding:12p
   <div id="verityOutput" data-verity-output class="chatOutput" aria-live="polite">Sign in, then tap “🎙️ Talk to Verity” and speak out loud. No typing needed.</div>
 </div><div id="micModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="micTitle"><div class="modalCard"><h2 id="micTitle">I can’t hear you!</h2><p>Press Allow so I can hear you. Your browser may ask for microphone permission next.</p><label class="rememberChoice"><input type="checkbox" id="alwaysAllowMic"> Always allow in Verity (remember this choice)</label><div class="buttons"><button id="micAllow" class="primary">Allow</button><button id="micCancel">Not now</button></div></div></div><p class="note" id="micStatus" hidden></p><audio id="phase1Voice" preload="auto" src="assets/phase1-greeting.mp3"></audio></div></main>
 <script>
-const scene=document.querySelector('#scene'),face=document.querySelector('#face'),box=document.querySelector('#box'),line=document.querySelector('#line'),mouth=document.querySelector('#mouth');let phase=1,phaseTimelineStarted=false,phaseOneTimer=null,phaseTwoTimer=null,glitchTimer=null,glitchEndTimer=null;
+const scene=document.querySelector('#scene'),face=document.querySelector('#face'),box=document.querySelector('#box'),line=document.querySelector('#line'),mouth=document.querySelector('#mouth');let phase=1,phaseTimelineStarted=false,phaseOneTimer=null,phaseTwoTimer=null,phaseThreeTimer=null,glitchTimer=null,glitchEndTimer=null;
 const phase1Greeting = "Hello, I'm Verity, your personal helper friend. Ask me anything. I know everything.";
 const GREETING_KEY='verityGreetingPlayed';
 const MIC_REMEMBER_KEY='verityRememberMic';
@@ -73,16 +73,19 @@ function speakWithBrowserVoice(text){
 }
 function setPhase(nextPhase){
   phase=nextPhase;
+  window.VERITY_PHASE=phase;
+  if(window.Verity && typeof window.Verity.setPhase==='function')window.Verity.setPhase(phase);
   scene.classList.toggle('monster',phase===3);
   mouth.classList.toggle('phase-two-mouth',phase===2);mouth.classList.toggle('phase-three-mouth',phase===3);
   scene.classList.toggle('glitch',phase>=2);
   if(phase===2){line.textContent='You have been here for a while…';speakWithBrowserVoice("You found me. I think I'm changing.");}
   if(phase===3){line.textContent='Verity has changed.';speakWithBrowserVoice("You stayed. Now you get to see the real me.");}
+  if(phase===4){line.textContent='A forgotten voice remembers…';speakWithBrowserVoice("I remember being forgotten. You came back, and I started to hope.");}
 }
 function startPhaseTimeline(){
   if(phaseTimelineStarted)return;
   phaseTimelineStarted=true;
-  phaseOneTimer=setTimeout(()=>{setPhase(2);phaseTwoTimer=setTimeout(()=>setPhase(3),15*60*1000);},10*60*1000);
+  phaseOneTimer=setTimeout(()=>{setPhase(2);phaseTwoTimer=setTimeout(()=>{setPhase(3);phaseThreeTimer=setTimeout(()=>setPhase(4),10*60*1000);},15*60*1000);},10*60*1000);
 }
 function schedulePhaseOneGlitch(){
   if(phase!==1)return;
@@ -191,6 +194,7 @@ window.addEventListener('verity:speaking',()=>setTalking(true));
 window.addEventListener('verity:silent',()=>setTalking(false));
 </script>
 <script>
+  window.VERITY_PHASE = phase;
   window.VERITY_CONFIG = {
     name: "Verity",
     voice: "Joanna",
