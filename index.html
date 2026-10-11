@@ -10,7 +10,7 @@ main{width:min(100%,430px);text-align:center}.tag{letter-spacing:.18em;color:var
 .scene{height:270px;display:grid;place-items:center;position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(#29213b,#12101b)}
 .box{cursor:pointer;touch-action:manipulation;width:100px;height:76px;background:#9b704e;border:4px solid #d0a176;position:absolute;bottom:38px;border-radius:5px;box-shadow:inset 0 -10px #6f4c35}
 .lid{position:absolute;width:114px;height:18px;left:-11px;top:-15px;background:#c49466;border:3px solid #e2b88b;transform-origin:left bottom}
-.face{width:108px;height:108px;background:#ffdc35;border-radius:50%;box-shadow:0 0 28px #ffdc3540;position:absolute;display:grid;place-items:center;font-size:64px;color:#17120c;opacity:0;transform:translateY(60px)}
+.face{pointer-events:none;width:108px;height:108px;background:#ffdc35;border-radius:50%;box-shadow:0 0 28px #ffdc3540;position:absolute;display:grid;place-items:center;font-size:64px;color:#17120c;opacity:0;transform:translateY(60px)}
 .face .eyes{position:absolute;top:29px;left:27px;right:27px;display:flex;justify-content:space-between}.eye{width:13px;height:22px;border-radius:50%;background:#17120c}.mouth{position:absolute;top:60px;font-size:32px;line-height:1}
 .scene.playing .lid{animation:openbox .55s .45s forwards}.scene.playing .box{animation:shake .4s 2 alternate}.scene.playing .face{animation:launch 1.9s .85s cubic-bezier(.2,.8,.25,1) forwards}
 .scene.glitch{animation:tint .2s infinite alternate}.scene.glitch .face{filter:hue-rotate(80deg) contrast(1.4);text-shadow:4px 0 #ff00c8,-4px 0 #00eaff}
