@@ -336,7 +336,7 @@
 
   function init() {
     var hasHooks = bindPageHooks();
-    if (cfg.widget === true || (cfg.widget === 'auto' && !hasHooks)) buildWidget();
+    // Floating ghost widget removed: Verity uses the page's existing microphone interface.
     puterReady.then(refreshAuth).catch(function () {});
     refreshAuth();
   }
