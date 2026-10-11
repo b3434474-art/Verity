@@ -18,9 +18,9 @@ main{width:min(100%,430px);text-align:center}.tag{letter-spacing:.18em;color:var
 @keyframes openbox{to{transform:translate(-6px,-30px) rotate(-35deg)}}@keyframes shake{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}@keyframes launch{0%{opacity:1;transform:translateY(35px) scale(.7)}35%{transform:translateY(-105px) scale(1.05)}55%{transform:translateY(-15px) scale(.96)}72%{transform:translateY(-55px)}86%{transform:translateY(-5px)}94%{transform:translateY(-18px)}100%{opacity:1;transform:translateY(0) scale(1)}}@keyframes tint{from{filter:hue-rotate(0)}to{filter:hue-rotate(60deg)}}
 button{border:1px solid #6d588e;background:#302440;color:var(--text);padding:12px 14px;border-radius:12px;font:inherit;cursor:pointer}button:active{transform:scale(.98)}.buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}.primary{background:#7955b5;border-color:#a58bd6}.line{color:#c9bfdc;min-height:48px;margin:16px 0 0}.note{font-size:.8rem;color:#aaa0bd;margin-top:14px}
 </style></head>
-<body><main><p class="tag">VERITY.exe · PROTOTYPE</p><h1>Meet Verity</h1><div class="panel"><div class="scene" id="scene"><div class="box" id="box"><div class="lid"></div></div><div class="face" id="face" aria-label="Verity"><div class="eyes"><i class="eye"></i><i class="eye"></i></div><div class="mouth" id="mouth">⌣</div></div></div><p class="line" id="line">There's a box waiting for you.</p><div class="buttons"><button class="primary" id="intro">Open the box</button><button id="talk">Talk</button><button id="mic">🎙️ Talk to Verity</button></div><p class="note" id="micStatus">Tap the microphone and allow microphone access to speak to Verity.</p><div class="buttons"><button data-phase="1">Phase 1</button><button data-phase="2">Phase 2</button><button data-phase="3">Phase 3</button><button id="glitch">Glitch</button><button id="reset">Reset</button></div><p class="note">Phase 1 uses Verity’s official greeting audio when assets/phase1-greeting.mp3 is present.</p><audio id="phase1Voice" preload="auto" src="assets/phase1-greeting.mp3"></audio></div></main>
+<body><main><p class="tag">VERITY.exe · PROTOTYPE</p><h1>Meet Verity</h1><div class="panel"><div class="scene" id="scene"><div class="box" id="box"><div class="lid"></div></div><div class="face" id="face" aria-label="Verity"><div class="eyes"><i class="eye"></i><i class="eye"></i></div><div class="mouth" id="mouth">⌣</div></div></div><p class="line" id="line">There's a box waiting for you.</p><div class="buttons"><button class="primary" id="intro">Open the box</button><button id="talk">Talk</button><button id="mic">🎙️ Talk to Verity</button></div><p class="note" id="micStatus">Tap the microphone and allow microphone access to speak to Verity.</p><div class="buttons"><button id="glitch">Glitch</button></div><p class="note" id="phaseStatus">Phase 1 · Calm for now</p><p class="note">Phase 1 uses Verity’s official greeting audio when assets/phase1-greeting.mp3 is present.</p><audio id="phase1Voice" preload="auto" src="assets/phase1-greeting.mp3"></audio></div></main>
 <script>
-const scene=document.querySelector('#scene'),face=document.querySelector('#face'),box=document.querySelector('#box'),line=document.querySelector('#line'),mouth=document.querySelector('#mouth');let phase=1;
+const scene=document.querySelector('#scene'),face=document.querySelector('#face'),box=document.querySelector('#box'),line=document.querySelector('#line'),mouth=document.querySelector('#mouth'),phaseStatus=document.querySelector('#phaseStatus');let phase=1,phaseTimelineStarted=false,phaseOneTimer=null,phaseTwoTimer=null;
 const phase1Greeting = "Hello, I'm Verity, your personal helper friend. Ask me anything. I know everything.";
 function speak(text){
   line.textContent=text;
@@ -46,7 +46,23 @@ function speakWithBrowserVoice(text){
   u.pitch=phase===3?.55:phase===2?.8:1.05;
   speechSynthesis.speak(u);
 }
+function setPhase(nextPhase){
+  phase=nextPhase;
+  scene.classList.toggle('monster',phase===3);
+  mouth.textContent=phase===1?'⌣':phase===2?'▰':'▱';
+  scene.classList.toggle('glitch',phase>=2);
+  phaseStatus.textContent=phase===1?'Phase 1 · Calm for now':phase===2?'Phase 2 · Something is changing':'Phase 3 · Monster form';
+  if(phase===2){line.textContent='You have been here for a while…';speakWithBrowserVoice("You found me. I think I'm changing.");}
+  if(phase===3){line.textContent='Verity has changed.';speakWithBrowserVoice("You stayed. Now you get to see the real me.");}
+}
+function startPhaseTimeline(){
+  if(phaseTimelineStarted)return;
+  phaseTimelineStarted=true;
+  phaseStatus.textContent='Phase 1 · 10 minutes until Phase 2';
+  phaseOneTimer=setTimeout(()=>{setPhase(2);phaseStatus.textContent='Phase 2 · 15 minutes until Phase 3';phaseTwoTimer=setTimeout(()=>setPhase(3),15*60*1000);},10*60*1000);
+}
 function intro(){
+  startPhaseTimeline();
   if('speechSynthesis' in window)speechSynthesis.cancel();
   const voice=document.querySelector("#phase1Voice");
   voice.pause();
@@ -59,9 +75,8 @@ function intro(){
   setTimeout(()=>{if(phase===1)speak(phase1Greeting);else speak(phase===2?"You found me.":"You opened the box.");},2700);
 }
 document.querySelector('#intro').onclick=intro;
-document.querySelector('#talk').onclick=()=>speak(phase===1?phase1Greeting:phase===2?"I have been waiting for you.":"You should not have opened it.");document.querySelector('#glitch').onclick=()=>{scene.classList.toggle('glitch');speak(scene.classList.contains('glitch')?"Did you see that?":"Everything is fine.");};
-document.querySelectorAll('[data-phase]').forEach(b=>b.onclick=()=>{phase=Number(b.dataset.phase);scene.classList.toggle('monster',phase===3);mouth.textContent=phase===1?'⌣':phase===2?'▰':'▱';line.textContent='Phase '+phase+' selected.';if(phase>1)scene.classList.add('glitch');else scene.classList.remove('glitch');});
-document.querySelector('#reset').onclick=()=>{if('speechSynthesis'in window)speechSynthesis.cancel();document.querySelector("#phase1Voice").pause();phase=1;scene.className='scene';face.style.opacity='0';line.textContent="There's a box waiting for you.";mouth.textContent='⌣';};
+document.querySelector('#talk').onclick=()=>speak(phase===1?phase1Greeting:phase===2?"I have been waiting for you.":"You should not have opened it.");
+document.querySelector('#glitch').onclick=()=>{scene.classList.toggle('glitch');speak(scene.classList.contains('glitch')?"Did you see that?":"Everything is fine.");};
 
 const micButton=document.querySelector('#mic');
 const micStatus=document.querySelector('#micStatus');
