@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#100e18"><title>Verity</title>
+<style>
+:root{color-scheme:dark;--bg:#100e18;--panel:#211b30;--purple:#b9a0ff;--text:#f4efff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0,#302448,var(--bg) 65%);color:var(--text);font-family:system-ui,sans-serif;display:grid;place-items:center;padding:18px}
+main{width:min(100%,430px);text-align:center}.tag{letter-spacing:.18em;color:var(--purple);font-size:.75rem}.panel{background:#1b1726;border:1px solid #413454;border-radius:24px;padding:22px;box-shadow:0 15px 50px #0007}
+.scene{height:270px;display:grid;place-items:center;position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(#29213b,#12101b)}
+.box{width:100px;height:76px;background:#9b704e;border:4px solid #d0a176;position:absolute;bottom:38px;border-radius:5px;box-shadow:inset 0 -10px #6f4c35}
+.lid{position:absolute;width:114px;height:18px;left:-11px;top:-15px;background:#c49466;border:3px solid #e2b88b;transform-origin:left bottom}
+.face{width:108px;height:108px;background:#ffdc35;border-radius:50%;box-shadow:0 0 28px #ffdc3540;position:absolute;display:grid;place-items:center;font-size:64px;color:#17120c;opacity:0;transform:translateY(60px)}
+.face .eyes{position:absolute;top:29px;left:27px;right:27px;display:flex;justify-content:space-between}.eye{width:13px;height:22px;border-radius:50%;background:#17120c}.mouth{position:absolute;top:60px;font-size:32px;line-height:1}
+.scene.playing .lid{animation:openbox .55s .45s forwards}.scene.playing .box{animation:shake .4s 2 alternate}.scene.playing .face{animation:launch 1.9s .85s cubic-bezier(.2,.8,.25,1) forwards}
+.scene.glitch{animation:tint .2s infinite alternate}.scene.glitch .face{filter:hue-rotate(80deg) contrast(1.4);text-shadow:4px 0 #ff00c8,-4px 0 #00eaff}
+.scene.monster .face{border-radius:38% 38% 48% 48%;transform:scale(1.3);background:#d9c83d;box-shadow:0 0 40px #bd2222}
+@keyframes openbox{to{transform:translate(-6px,-30px) rotate(-35deg)}}@keyframes shake{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}@keyframes launch{0%{opacity:1;transform:translateY(35px) scale(.7)}35%{transform:translateY(-105px) scale(1.05)}55%{transform:translateY(-15px) scale(.96)}72%{transform:translateY(-55px)}86%{transform:translateY(-5px)}94%{transform:translateY(-18px)}100%{opacity:1;transform:translateY(0) scale(1)}}@keyframes tint{from{filter:hue-rotate(0)}to{filter:hue-rotate(60deg)}}
+button{border:1px solid #6d588e;background:#302440;color:var(--text);padding:12px 14px;border-radius:12px;font:inherit;cursor:pointer}button:active{transform:scale(.98)}.buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}.primary{background:#7955b5;border-color:#a58bd6}.line{color:#c9bfdc;min-height:48px;margin:16px 0 0}.note{font-size:.8rem;color:#aaa0bd;margin-top:14px}
+</style></head>
+<body><main><p class="tag">VERITY.exe · PROTOTYPE</p><h1>Meet Verity</h1><div class="panel"><div class="scene" id="scene"><div class="box" id="box"><div class="lid"></div></div><div class="face" id="face" aria-label="Verity"><div class="eyes"><i class="eye"></i><i class="eye"></i></div><div class="mouth" id="mouth">⌣</div></div></div><p class="line" id="line">There's a box waiting for you.</p><div class="buttons"><button class="primary" id="intro">Open the box</button><button id="talk">Talk</button></div><div class="buttons"><button data-phase="1">Phase 1</button><button data-phase="2">Phase 2</button><button data-phase="3">Phase 3</button><button id="glitch">Glitch</button><button id="reset">Reset</button></div><p class="note">Prototype starter. Character art and official voice files will be added in the next asset pass.</p></div></main>
+<script>
+const scene=document.querySelector('#scene'),face=document.querySelector('#face'),box=document.querySelector('#box'),line=document.querySelector('#line'),mouth=document.querySelector('#mouth');let phase=1;
+function speak(text){line.textContent=text;if(!('speechSynthesis'in window))return; speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=phase===3?.78:phase===2?.9:1;u.pitch=phase===3?.55:phase===2?.8:1.05;speechSynthesis.speak(u)}
+function intro(){speechSynthesis?.cancel();scene.classList.remove('playing');face.style.opacity='0';void scene.offsetWidth;scene.classList.add('playing');line.textContent='Something is moving inside…';setTimeout(()=>{if(phase===1)speak("Oh! Hi there! I'm Verity.");else speak(phase===2?"You found me.": "You opened the box.");},2700)}
+document.querySelector('#intro').onclick=intro;document.querySelector('#talk').onclick=()=>speak(phase===1?"Hi! I'm Verity.":phase===2?"I have been waiting for you.":"You should not have opened it.");document.querySelector('#glitch').onclick=()=>{scene.classList.toggle('glitch');speak(scene.classList.contains('glitch')?"Did you see that?":"Everything is fine.");};
+document.querySelectorAll('[data-phase]').forEach(b=>b.onclick=()=>{phase=Number(b.dataset.phase);scene.classList.toggle('monster',phase===3);mouth.textContent=phase===1?'⌣':phase===2?'▰':'▱';line.textContent='Phase '+phase+' selected.';if(phase>1)scene.classList.add('glitch');else scene.classList.remove('glitch');});
+document.querySelector('#reset').onclick=()=>{speechSynthesis?.cancel();phase=1;scene.className='scene';face.style.opacity='0';line.textContent="There's a box waiting for you.";mouth.textContent='⌣';};
+</script></body></html>
