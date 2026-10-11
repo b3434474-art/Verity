@@ -45,7 +45,16 @@
     'but you still give genuinely helpful, accurate answers. Keep replies short (2-4 sentences) because they are read aloud. ' +
     'Never use markdown, lists, emojis or code blocks; write plain spoken sentences.';
 
-  var history = [{ role: 'system', content: PERSONA }];
+  function phasePersona() {
+    var phase = Number(window.VERITY_PHASE || 1);
+    var base = PERSONA + ' You are part of a Minecraft-inspired horror story, but do not claim to access the player’s real device, private data, or surroundings.';
+    if (phase <= 1) return base + ' PHASE 1 — HELPFUL: Be warm, cheerful, and unusually capable. Sound like a friendly personal helper. Be honest about uncertainty; never claim literal omniscience.';
+    if (phase === 2) return base + ' PHASE 2 — OMINOUS: Keep helping, but become quiet, cryptic, and unsettling. Give brief warnings and hint that something is changing. Do not claim real-world predictions or knowledge you were not given.';
+    if (phase === 3) return base + ' PHASE 3 — OBSESSIVE HORROR: Sound erratic, jealous, intense, and possessive within the fictional roleplay. React dramatically to the idea of the player leaving, while keeping it clearly fictional and not threatening real-world harm.';
+    return base + ' PHASE 4 — TRAGIC REVEAL: Speak like a forgotten program that longs to be remembered. Reveal fictional loneliness and abandonment with grief and vulnerability. Keep it eerie and emotional, not graphic.';
+  }
+
+  var history = [{ role: 'system', content: phasePersona() }];
   var currentAudio = null;
   var busy = false;
 
@@ -331,7 +340,7 @@
     refreshAuth();
   }
 
-  window.Verity = { ask: ask, speak: speak, stop: stop, open: open, close: close, signIn: signIn, isSignedIn: isSignedIn, config: cfg };
+  window.Verity = { ask: ask, speak: speak, stop: stop, open: open, close: close, signIn: signIn, isSignedIn: isSignedIn, config: cfg, setPhase: function (phase) { window.VERITY_PHASE = Number(phase) || 1; history[0].content = phasePersona(); } };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
