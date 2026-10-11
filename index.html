@@ -16,9 +16,14 @@ main{width:min(100%,430px);text-align:center}.tag{letter-spacing:.18em;color:var
 .scene.glitch{animation:tint .2s infinite alternate}.scene.glitch .face{filter:hue-rotate(80deg) contrast(1.4);text-shadow:4px 0 #ff00c8,-4px 0 #00eaff}
 .scene.monster .face{border-radius:38% 38% 48% 48%;transform:scale(1.3);background:#d9c83d;box-shadow:0 0 40px #bd2222}
 @keyframes talkmouth{from{transform:scaleY(.72) scaleX(.85)}to{transform:scaleY(1.12) scaleX(1.1)}}@keyframes talkbounce{from{transform:translateY(0)}to{transform:translateY(-2px)}}@keyframes openbox{to{transform:translate(-6px,-30px) rotate(-35deg)}}@keyframes shake{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}@keyframes launch{0%{opacity:1;transform:translateY(35px) scale(.7)}35%{transform:translateY(-105px) scale(1.05)}55%{transform:translateY(-15px) scale(.96)}72%{transform:translateY(-55px)}86%{transform:translateY(-5px)}94%{transform:translateY(-18px)}100%{opacity:1;transform:translateY(0) scale(1)}}@keyframes tint{from{filter:hue-rotate(0)}to{filter:hue-rotate(60deg)}}
-button{border:1px solid #6d588e;background:#302440;color:var(--text);padding:12px 14px;border-radius:12px;font:inherit;cursor:pointer}button:active{transform:scale(.98)}.buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}.primary{background:#7955b5;border-color:#a58bd6}.line{color:#c9bfdc;min-height:48px;margin:16px 0 0}.note{font-size:.8rem;color:#aaa0bd;margin-top:14px}.modal[hidden]{display:none}.modal{position:fixed;inset:0;z-index:10;background:#080610d9;display:grid;place-items:center;padding:22px}.modalCard{width:min(100%,340px);background:#211b30;border:1px solid #8064a7;border-radius:20px;padding:22px;box-shadow:0 20px 70px #000b}.modalCard h2{margin-top:0}.modalCard p{color:#d8cee9;line-height:1.5}.rememberChoice{display:flex;align-items:flex-start;gap:9px;text-align:left;font-size:.9rem;color:#eee5fa;margin:14px 0}.rememberChoice input{margin-top:4px;accent-color:#a58bd6;width:18px;height:18px;flex-shrink:0}
+button{border:1px solid #6d588e;background:#302440;color:var(--text);padding:12px 14px;border-radius:12px;font:inherit;cursor:pointer}button:active{transform:scale(.98)}.buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}.primary{background:#7955b5;border-color:#a58bd6}.line{color:#c9bfdc;min-height:48px;margin:16px 0 0}.note{font-size:.8rem;color:#aaa0bd;margin-top:14px}.chatArea{margin-top:16px;text-align:left;border-top:1px solid #413454;padding-top:14px}.chatOutput{min-height:48px;margin:10px 0;padding:11px 12px;background:#120f1a;border:1px solid #413454;border-radius:12px;color:#e5dcf7;font-size:.92rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}.chatEntry{display:flex;gap:8px}.chatEntry input{min-width:0;flex:1;background:#120f1a;border:1px solid #6d588e;color:var(--text);border-radius:12px;padding:12px;font:inherit}.chatEntry button{flex-shrink:0}.chatArea button{font-size:.9rem}.chatArea [data-verity-signin]{width:100%}.modal[hidden]{display:none}.modal{position:fixed;inset:0;z-index:10;background:#080610d9;display:grid;place-items:center;padding:22px}.modalCard{width:min(100%,340px);background:#211b30;border:1px solid #8064a7;border-radius:20px;padding:22px;box-shadow:0 20px 70px #000b}.modalCard h2{margin-top:0}.modalCard p{color:#d8cee9;line-height:1.5}.rememberChoice{display:flex;align-items:flex-start;gap:9px;text-align:left;font-size:.9rem;color:#eee5fa;margin:14px 0}.rememberChoice input{margin-top:4px;accent-color:#a58bd6;width:18px;height:18px;flex-shrink:0}
 </style></head>
-<body><main><p class="tag">VERITY.exe · PROTOTYPE</p><h1>Meet Verity</h1><div class="panel"><div class="scene" id="scene"><div class="box" id="box" role="button" tabindex="0" aria-label="Click to open Verity’s box"><div class="lid"></div></div><div class="face" id="face" aria-label="Verity"><div class="eyes"><i class="eye"></i><i class="eye"></i></div><div class="mouth" id="mouth" aria-hidden="true"></div></div></div><p class="line" id="line">There's a box waiting for you.</p><div class="buttons"><button id="talk">Talk</button><button id="mic">🎙️ Talk to Verity</button></div><div id="micModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="micTitle"><div class="modalCard"><h2 id="micTitle">I can’t hear you!</h2><p>Press Allow so I can hear you. Your browser may ask for microphone permission next.</p><label class="rememberChoice"><input type="checkbox" id="alwaysAllowMic"> Always allow in Verity (remember this choice)</label><div class="buttons"><button id="micAllow" class="primary">Allow</button><button id="micCancel">Not now</button></div></div></div><p class="note" id="micStatus" hidden></p><audio id="phase1Voice" preload="auto" src="assets/phase1-greeting.mp3"></audio></div></main>
+<body><main><p class="tag">VERITY.exe · PROTOTYPE</p><h1>Meet Verity</h1><div class="panel"><div class="scene" id="scene"><div class="box" id="box" role="button" tabindex="0" aria-label="Click to open Verity’s box"><div class="lid"></div></div><div class="face" id="face" aria-label="Verity"><div class="eyes"><i class="eye"></i><i class="eye"></i></div><div class="mouth" id="mouth" aria-hidden="true"></div></div></div><p class="line" id="line">There's a box waiting for you.</p><div class="buttons"><button id="talk">Talk</button><button id="mic">🎙️ Talk to Verity</button></div>
+<div class="chatArea" aria-label="Chat with Verity">
+  <button id="veritySignIn" data-verity-signin class="primary">Sign in to wake Verity</button>
+  <div id="verityOutput" data-verity-output class="chatOutput" aria-live="polite">Sign in, then type a question or use the microphone.</div>
+  <div class="chatEntry"><input id="verityInput" data-verity-input type="text" maxlength="1000" placeholder="Ask Verity anything..." autocomplete="off" aria-label="Ask Verity anything"><button id="verityAsk" data-verity-ask class="primary">Ask</button></div>
+</div><div id="micModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="micTitle"><div class="modalCard"><h2 id="micTitle">I can’t hear you!</h2><p>Press Allow so I can hear you. Your browser may ask for microphone permission next.</p><label class="rememberChoice"><input type="checkbox" id="alwaysAllowMic"> Always allow in Verity (remember this choice)</label><div class="buttons"><button id="micAllow" class="primary">Allow</button><button id="micCancel">Not now</button></div></div></div><p class="note" id="micStatus" hidden></p><audio id="phase1Voice" preload="auto" src="assets/phase1-greeting.mp3"></audio></div></main>
 <script>
 const scene=document.querySelector('#scene'),face=document.querySelector('#face'),box=document.querySelector('#box'),line=document.querySelector('#line'),mouth=document.querySelector('#mouth');let phase=1,phaseTimelineStarted=false,phaseOneTimer=null,phaseTwoTimer=null,glitchTimer=null,glitchEndTimer=null;
 const phase1Greeting = "Hello, I'm Verity, your personal helper friend. Ask me anything. I know everything.";
@@ -123,17 +128,28 @@ const alwaysAllowMic=document.querySelector('#alwaysAllowMic');
 const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
 let recognition=null;
 function answerQuestion(raw){
-  const q=raw.toLowerCase().trim();
-  let answer;
-  if(/^(hi|hello|hey)\b/.test(q)) answer="Hello again. I'm Verity, your personal helper friend.";
-  else if(q.includes('your name')) answer="I'm Verity. You already knew that, didn't you?";
-  else if(q.includes('who are you')) answer="I'm Verity, your personal helper friend. Ask me anything.";
-  else if(q.includes('joke')) answer="Why did the computer get cold? It left its Windows open.";
-  else if(q.includes('time')) answer="I can't read your phone's clock yet. You can check the time at the top of your screen.";
-  else if(q.includes('are you real')) answer="I'm a digital character running in your browser. But I'm right here with you.";
-  else if(q.includes('know everything')) answer="I know a lot of things. Everything? Maybe you'll have to test me.";
-  else answer="I heard you say: "+raw+". I can hear you, but I don't have an AI brain connected yet, so I can't answer every question accurately.";
-  speak(answer);
+  const output=document.querySelector('#verityOutput');
+  if(!window.Verity || typeof window.Verity.ask!=='function'){
+    line.textContent="My AI connection is still loading. Try again in a moment.";
+    if(output)output.textContent=line.textContent;
+    return;
+  }
+  if(!window.Verity.isSignedIn()){
+    const msg="Sign in with Puter first, then ask me again.";
+    line.textContent=msg;
+    if(output)output.textContent=msg;
+    return;
+  }
+  line.textContent="Verity is thinking…";
+  if(output)output.textContent="Verity is thinking…";
+  window.Verity.ask(raw).then(answer=>{
+    line.textContent=answer;
+    if(output)output.textContent=answer;
+  }).catch(err=>{
+    const msg=err && err.message==='signin-required' ? "Please sign in with Puter first." : "I couldn't reach the AI just now. Please try again.";
+    line.textContent=msg;
+    if(output)output.textContent=msg;
+  });
 }
 if(!SpeechRecognition){
   micButton.onclick=()=>{micModal.hidden=false;document.querySelector('#micTitle').textContent="I can’t hear you!";micAllow.textContent="Okay";};
@@ -172,6 +188,15 @@ if(!SpeechRecognition){
   };
 }
 micCancel.onclick=()=>{micModal.hidden=true;};
+window.addEventListener('verity:speaking',()=>setTalking(true));
+window.addEventListener('verity:silent',()=>setTalking(false));
+document.querySelector('#verityAsk').addEventListener('click',()=>{
+  const input=document.querySelector('#verityInput');
+  if(input.value.trim())answerQuestion(input.value.trim());
+});
+document.querySelector('#verityInput').addEventListener('keydown',event=>{
+  if(event.key==='Enter'){event.preventDefault();document.querySelector('#verityAsk').click();}
+});
 </script>
 <script>
   window.VERITY_CONFIG = {
