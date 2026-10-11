@@ -37,12 +37,6 @@ function setTalking(active){
 }
 function speak(text){
   line.textContent=text;
-  if(text===phase1Greeting && storageGet(GREETING_KEY)==='yes'){
-    const followUp="I'm here. What would you like to ask?";
-    line.textContent=followUp;
-    speakWithBrowserVoice(followUp);
-    return;
-  }
   if(phase===1 && text===phase1Greeting){
     storageSet(GREETING_KEY,'yes');
     setTalking(true);
@@ -112,13 +106,12 @@ function intro(){
   line.textContent='Something is moving inside…';
   setTimeout(()=>{
     if(phase===1){
-      if(storageGet(GREETING_KEY)!=='yes')speak(phase1Greeting);
-      else line.textContent="Verity is here.";
+      speak(phase1Greeting);
     }else speak(phase===2?"You found me.":"You opened the box.");
   },2700);
 }
 box.addEventListener('pointerup',event=>{event.preventDefault();intro();});box.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();intro();}});
-document.querySelector('#talk').onclick=()=>speak(phase===1?(storageGet(GREETING_KEY)==='yes'?"I'm here. What would you like to ask?":phase1Greeting):phase===2?"I have been waiting for you.":"You should not have opened it.");
+document.querySelector('#talk').onclick=()=>speak(phase===1?phase1Greeting:phase===2?"I have been waiting for you.":phase===3?"You should not have opened it.":"I remember being forgotten. You came back, and I started to hope.");
 
 
 const micButton=document.querySelector('#mic');
