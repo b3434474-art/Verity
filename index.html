@@ -190,10 +190,6 @@ if(!SpeechRecognition){
 micCancel.onclick=()=>{micModal.hidden=true;};
 window.addEventListener('verity:speaking',()=>setTalking(true));
 window.addEventListener('verity:silent',()=>setTalking(false));
-document.querySelector('#verityAsk').addEventListener('click',()=>{
-  const input=document.querySelector('#verityInput');
-  if(input.value.trim())answerQuestion(input.value.trim());
-});
 document.querySelector('#verityInput').addEventListener('keydown',event=>{
   if(event.key==='Enter'){event.preventDefault();document.querySelector('#verityAsk').click();}
 });
