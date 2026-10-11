@@ -32,26 +32,25 @@ function setTalking(active){
   if(speechStopTimer){clearTimeout(speechStopTimer);speechStopTimer=null;}
 }
 function speak(text){
+  line.textContent=text;
   if(text===phase1Greeting && storageGet(GREETING_KEY)==='yes'){
-    line.textContent="I'm here. What would you like to ask?";
+    const followUp="I'm here. What would you like to ask?";
+    line.textContent=followUp;
+    speakWithBrowserVoice(followUp);
     return;
   }
-  if(text===phase1Greeting)storageSet(GREETING_KEY,'yes');
-  line.textContent=text;
-  setTalking(true);
-  if(phase===1){
+  if(phase===1 && text===phase1Greeting){
+    storageSet(GREETING_KEY,'yes');
+    setTalking(true);
     const voice=document.querySelector("#phase1Voice");
-    if(voice){
-      voice.currentTime=0;
-      voice.onended=()=>setTalking(false);
-      voice.onerror=()=>{setTalking(false);speakWithBrowserVoice(text);};
-      const playback=voice.play();
-      if(playback && typeof playback.catch==="function"){
-        playback.catch(()=>speakWithBrowserVoice(text));
-      }
-      speechStopTimer=setTimeout(()=>setTalking(false),Math.max(4000,((voice.duration||8)+1)*1000));
-      return;
-    }
+    voice.pause();
+    voice.currentTime=0;
+    voice.onended=()=>setTalking(false);
+    voice.onerror=()=>{setTalking(false);speakWithBrowserVoice(text);};
+    const playback=voice.play();
+    if(playback && typeof playback.catch==="function")playback.catch(()=>speakWithBrowserVoice(text));
+    speechStopTimer=setTimeout(()=>setTalking(false),Math.max(4000,((voice.duration||8)+1)*1000));
+    return;
   }
   speakWithBrowserVoice(text);
 }
